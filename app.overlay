@@ -1,0 +1,23 @@
+&pinctrl {
+    i2c22_default: i2c22_default {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 1, 4)>,
+                    <NRF_PSEL(TWIM_SCL, 1, 3)>;
+        };
+    };
+};
+
+&i2c22 {
+    status = "okay";
+    pinctrl-0 = <&i2c22_default>;
+    pinctrl-names = "default";
+
+    bmi270: bmi270@68 {
+        compatible = "i2c-device";
+        reg = <0x68>;
+    };
+};
+
+&gpio3 {
+    status = "okay";
+};
