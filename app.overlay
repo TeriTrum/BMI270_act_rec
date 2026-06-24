@@ -1,5 +1,5 @@
 &pinctrl {
-    i2c22_default: i2c22_default {
+    i2c24_default: i2c24_default {
         group1 {
             psels = <NRF_PSEL(TWIM_SDA, 1, 4)>,
                     <NRF_PSEL(TWIM_SCL, 1, 3)>;
@@ -7,9 +7,9 @@
     };
 };
 
-&i2c22 {
+&i2c24 {
     status = "okay";
-    pinctrl-0 = <&i2c22_default>;
+    pinctrl-0 = <&i2c24_default>;
     pinctrl-names = "default";
 
     bmi270: bmi270@68 {

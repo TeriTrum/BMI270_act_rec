@@ -212,9 +212,21 @@ int init_all_systems(void)
     rslt = bmi270_context_get_act_recg_sett(&ai_sett, &bmi270_dev);
     if (rslt == BMI2_OK)
     {
-        ai_sett.pp_en = 1;        // Bat hau xu ly (post processing)
-        ai_sett.buf_size = 5;     // So trang thai cho trong bo dem FIFO, MAX: 10
-        ai_sett.min_seg_conf = 3; // So trang thai can duoc xu ly truoc khi dua vao fifo
+        /*
+         *! Tat ca cau hinh deu la default, neu trong qua trinh test cam thay bat on thi sua
+         */
+        ai_sett.pp_en = 1;     // Bat hau xu ly (post processing)
+        ai_sett.buf_size = 10; // Buffer size for post processing of the activity detected by the classifier
+
+        /*! Minimum segments classified with moderate confidence as belonging
+         *  to a certain activity type to be added to activity buffer.
+         */
+        ai_sett.min_seg_conf = 10;
+
+        // Nguong GDI: nguong nay chi ra do da dang cua du lieu trong bo FIFO
+        // GDI cang cao thi dau vao cang da dang -> AI cang kho nhan dien
+        ai_sett.min_gdi_thres = 1761;
+        ai_sett.min_gdi_thres = 2662;
 
         // Check nap cau hinh AI
         rslt = bmi270_context_set_act_recg_sett(&ai_sett, &bmi270_dev);
@@ -246,8 +258,8 @@ int init_all_systems(void)
         return rslt;
     }
 
-    // Cai nguong Watermark = 250, co tren 250 byte trong bo fifo la nay ngat
-    rslt = bmi2_set_fifo_wm(250, &bmi270_dev);
+    // Cai nguong Watermark = 252, co tren 252 byte trong bo fifo la nay ngat
+    rslt = bmi2_set_fifo_wm(252, &bmi270_dev);
     if (rslt != BMI2_OK)
     {
         printk("Loi cai dat FIFO Watermark: %d\n", rslt);
@@ -275,7 +287,5 @@ int init_all_systems(void)
 
     // Goi ham khoi tao chan ngat
     init_bmi2_interrupt();
-
-    printk("Khoi tao BMI270 thanh cong!\n");
     return 0;
 }
